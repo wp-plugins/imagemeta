@@ -32,13 +32,14 @@ All current imagery is presented in a table, sortable by TITLE or DATE.
 
 == Screenshots ==
 
-1. The ImageMeta table with examples of image meta-data that can be directly edited
+1. The ImageMeta table with examples of image meta-data that can be directly edited, or easily copied across all fields and saved with the click of a button.
 2. Missing images that can be safely removed.
 
 == Frequently Asked Questions ==
 
 = Are there any new features planned? =
 Yes. We plan to add a feature to access posts (and post counts) where each image is attached.
+
 = Can i propose a feature? =
 If you wish. Sure.
 
