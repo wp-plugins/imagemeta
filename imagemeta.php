@@ -3,11 +3,11 @@
 Plugin Name: ImageMeta
 Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
 Description: The fastest way to manage meta-data for your wordpress images.
-Version: 0.2
+Version: 0.3
 Author: era404 Creative Group, Inc.
 Author URI: http://www.era404.com
 License: GPLv2 or later.
-Copyright 2012  era404 Creative Group, Inc.  (email : support@era404.net)
+Copyright 2012  era404 Creative Group, Inc.  (email : in4m@era404.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as 
@@ -138,7 +138,7 @@ function imagemeta_plugin_options() {
 	echo "</div>
 	<br /><br />";
 	
-	echo "<div id='warning' class='orange'>".(($cwpp>1||$cwppm>1)?"NOTE:<br />($cwpp) post records removed.<br />($cwppm) postmeta records removed.<br /><br />":"")."</div>";
+	echo "<div id='warning' class='orange'>".(($cwpp>1||$cwppm>1)?"NOTE:</strong><br />($cwpp) post records removed.<br />($cwppm) postmeta records removed.<br /><br />":"")."</div>";
 	echo "<table id='imagemetas'>";
 	echo "<thead id='imagemetahead'><tr><th>&nbsp;</th>
 			<th>
@@ -204,7 +204,7 @@ EOHTML;
 	if($missing>0) { echo <<<EOWARNING
 <script type='text/javascript'>
 var warning = document.getElementById('warning');
-warning.innerHTML += "WARNING:<br />($missing) image files do not appear to exist in your content folder.<br />You can delete these images individually using the links below.";
+warning.innerHTML += "<strong>WARNING:</strong> ($missing) image files do not appear to exist in your content folder. You can delete these images individually using the links below.";
 </script>
 EOWARNING;
 	}
@@ -245,9 +245,11 @@ function addstyles() {
     #imagemetas p {
     	width:60px;
     	overflow:hidden;
-    	margin:0;
+    	margin: 5px 0;
     	float:left;
     	font-weight:bold;
+		clear: left;
+		height
     }
 	#imagemetas {
 		border-collapse: collapse;
@@ -333,7 +335,7 @@ function addstyles() {
 	tr.row {
 		height: 70px;
 	}
-	tr.orange {
+	tr.orange, #warning.orange {
 		background: #ffe4db;
 	}
 	#warning {
