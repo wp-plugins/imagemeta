@@ -23,6 +23,7 @@ All current imagery is presented in a table, sortable by TITLE or DATE.
 * A quick reference thumbnail is presented in-line to popup individual images for review.
 * An edit link is provided beside each image to fine-tune editing, using traditional wordpress administration.
 * Missing images are highlighted and an additional delete button is provided for safe/quick file grooming.
+* Quick-edit dropdowns are provided to open/edit posts where images are attached, or embedded into the post content.
 
 == Installation ==
 
