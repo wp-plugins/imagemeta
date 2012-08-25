@@ -45,11 +45,15 @@ If you wish. Sure.
 
 == Changelog ==
 
+= 0.4 =	
+*Added quick-edit dropdowns for posts that contain images, either attached …
+  	
+= 0.3 =
+* More styles updates.
+* Subtle update to screenshot captions
 
 = 0.2 =
-
 * Updated styles for tablet/iDevices
 
 = 0.1 =
-
 * Plugin-out only in beta, currently. Standby for official release.
