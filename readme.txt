@@ -46,7 +46,7 @@ If you wish. Sure.
 == Changelog ==
 
 = 0.4 =	
-*Added quick-edit dropdowns for posts that contain images, either attached …
+* Added quick-edit dropdowns for posts that contain images, either attached or embedded into post content.
   	
 = 0.3 =
 * More styles updates.
