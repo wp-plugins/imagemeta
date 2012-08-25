@@ -3,7 +3,7 @@
 Plugin Name: ImageMeta
 Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
 Description: The fastest way to manage meta-data for your wordpress images.
-Version: 0.3
+Version: 0.4
 Author: era404 Creative Group, Inc.
 Author URI: http://www.era404.com
 License: GPLv2 or later.
@@ -30,7 +30,7 @@ define('IMAGEMETA_URL', admin_url() . 'options-general.php?page=imagemeta');
 // Setup plugin menus
 add_action( 'admin_menu', 'imagemeta_admin_menu' );
 function imagemeta_admin_menu() {
-	add_options_page( 'Image Meta', 'Image Meta', 'manage_options', 'imagemeta', 'imagemeta_plugin_options' );
+	add_options_page( 'ImageMeta', 'ImageMeta', 'manage_options', 'imagemeta', 'imagemeta_plugin_options' );
 }
 
 // Setup plugin scripts and styles
@@ -94,6 +94,7 @@ function imagemeta_plugin_options() {
 			
 	//build query
 	$q =   "SELECT  {$wpdb->prefix}posts.ID as postid, 
+					{$wpdb->prefix}posts.post_parent as parentid, 
 					{$wpdb->prefix}posts.post_content, 
 					{$wpdb->prefix}posts.post_title, 
 					{$wpdb->prefix}posts.post_excerpt, 
@@ -110,11 +111,10 @@ function imagemeta_plugin_options() {
 			ORDER BY {$wpdb->prefix}posts.{$sort}
 			LIMIT {$pg[4]},{$pg[5]}
 			"; 
-			//echo $q;
+			echo $q;
 	
 	//verify all images have a paired meta field / create record otherwise
 	$imgs = $wpdb->get_results($q, ARRAY_A);
-
 	foreach($imgs as $k=>$i) {
 		if($i['meta_id']=="") {
 			$wpdb->query("INSERT INTO {$wpdb->prefix}postmeta (meta_id,post_id,meta_key,meta_value) VALUES (NULL,{$i['postid']},'_wp_attachment_image_alt','')");
@@ -123,7 +123,6 @@ function imagemeta_plugin_options() {
 
 	//pull 30 rows of images
 	$imgs = $wpdb->get_results($q, ARRAY_A);
-	
 
 	//myprint_r($imgs);
 	addstyles();
@@ -178,12 +177,45 @@ function imagemeta_plugin_options() {
 			//echo WP_CONTENT_DIR . $filesplit[1] . " could not be found.<br />";
 			$rmStyle = "orange"; $missing++;
 		}
-		
 
+	$edits = array();
+
+	$postid = $i['postid'];
+	//get all posts for which this image has been attached.
+	$qATT = "SELECT p.post_title,pm.post_id as edit 
+			 FROM {$wpdb->prefix}postmeta pm,{$wpdb->prefix}posts p
+			 WHERE pm.post_id = p.ID
+			 AND pm.meta_key = '_thumbnail_id' AND pm.meta_value = $postid"; //echo $qATT;
+	$ATT = $wpdb->get_results($qATT, ARRAY_A); //myprint_r($ATT);
+	if(!empty($ATT)){
+		$edits['a'] = "Attached (".(count($ATT)).") <select onChange='javascript:edit(this.options[this.selectedIndex].value);'><option value='-1'>Edit One</option>";
+		foreach($ATT as $v) $edits['a'].="<option value='{$v['edit']}' >".substr($v['post_title'],0,30)."</option>";
+		$edits['a'] .= "</select><br />";
+	}
+	//get all posts for which this image has been embedded.
+	$qEMB = "SELECT ID,post_title,post_parent FROM {$wpdb->prefix}posts WHERE post_content LIKE '%wp-image-{$postid}%' ORDER BY post_date DESC"; //echo $qEMB;
+	$EMB = $wpdb->get_results($qEMB, ARRAY_A); //myprint_r($EMB);
+	if(!empty($EMB)){
+		foreach($EMB as $v){
+			if(array_key_exists($v['post_parent'],$edits['e']) && $v['post_parent']>0)continue;
+			if(array_key_exists($v['ID'],$edits['e']) && $v['post_parent']<1)continue;
+			if($v['post_parent']<1) $v['post_parent'] = $v['ID'];
+			$edits['e'][$v['post_parent']] = "<option value='{$v['post_parent']}' >".substr($v['post_title'],0,30)."</option>";
+		}
+		$edits['e'] = "Embedded (".count($edits['e']).") <select onChange='javascript:edit(this.options[this.selectedIndex].value);'><option value='-1'>Edit One</option>".implode("",$edits['e'])."</select>";
+	}
 
 echo <<<EOHTML
 	<tr class='info $rmStyle'>
-		<td colspan='4'><div style='float: right;'><a href='{$admin}media.php?attachment_id={$i['postid']}&action=edit' title='Edit This Item' target='_blank'><img src="$ed" width='16' height=16' align='absmiddle' /></a>&nbsp;&nbsp;{$del}</div><b>$date</b>: {$filesplit[1]}</td>
+		<td colspan='4'>
+			<div style='float: right;'>
+				{$edits['a']}
+				{$edits['e']}
+			</div>
+			<a href='{$admin}media.php?attachment_id={$i['postid']}&action=edit' title='Edit This Item' target='_blank'><img src="$ed" width='16' height=16' align='absmiddle' /></a>
+				&nbsp;&nbsp;{$del}
+			<b>$date</b>: {$filesplit[1]} 
+		</td>
 	</tr>
 	<tr class='row'>
 		<td><div class='thumb'>{$link}</div></td>
@@ -199,15 +231,25 @@ echo <<<EOHTML
 	</tr>
 EOHTML;
 	}
-	echo "</table>";
+	echo "</table>
+	<script type='text/javascript'>
+		function edit(postid){
+		if(postid<1) return;
+		window.open('{$admin}post.php?post='+postid+'&action=edit');
+		return;
+	}
+	</script>";
 
 	if($missing>0) { echo <<<EOWARNING
 <script type='text/javascript'>
-var warning = document.getElementById('warning');
-warning.innerHTML += "<strong>WARNING:</strong> ($missing) image files do not appear to exist in your content folder. You can delete these images individually using the links below.";
+	var warning = document.getElementById('warning');
+	warning.innerHTML += "<strong>WARNING:</strong> ($missing) image files do not appear to exist in your content folder. You can delete these images individually using the links below.";
 </script>
 EOWARNING;
 	}
+	else { echo "<script type='text/javascript'>document.getElementById('warning').style.display = 'none';</script>";
+	}
+
 }
 
 
@@ -258,7 +300,7 @@ function addstyles() {
 	}
     #imagemetas tr.info td {
 		padding: 5px;
-		font-size: 14px;
+		font-size: 11px;
     }
 
 	tr:nth-child(2n+1){
@@ -328,6 +370,28 @@ function addstyles() {
 	}
 	.pager a:hover {
 		font-weight:bold;
+	}
+	.editbutton {
+		width: auto !important;
+		margin: 0 4px !important;
+		float:right !important;
+		padding: 0 4px;
+		clear: none;
+    	height:14px;
+    	background-color:#DDD;
+    	border:1px solid #AAA;
+    	display:block;
+    	text-decoration: none;
+		margin: 0 3px;
+    }
+	.editbutton a {
+		text-decoration:none;
+	}
+	.editbutton a:hover {
+		font-weight:bold;
+	}
+	.editmaster {
+		border:1px solid black;
 	}
     .copyAcross {
     	margin-top:10px;
