@@ -46,6 +46,9 @@ If you wish. Sure.
 
 == Changelog ==
 
+= 0.4.1 =
+* Minor update to provide PayPal donate button for all the considerate (and handsome) individuals that wish to contribute to this and other fine plug-ins by the developer.
+
 = 0.4 =	
 * Added quick-edit dropdowns for posts that contain images, either attached or embedded into post content.
   	

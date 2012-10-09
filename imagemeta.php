@@ -3,7 +3,7 @@
 Plugin Name: ImageMeta
 Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
 Description: The fastest way to manage meta-data for your wordpress images.
-Version: 0.4
+Version: 0.4.1
 Author: era404 Creative Group, Inc.
 Author URI: http://www.era404.com
 License: GPLv2 or later.
@@ -111,7 +111,7 @@ function imagemeta_plugin_options() {
 			ORDER BY {$wpdb->prefix}posts.{$sort}
 			LIMIT {$pg[4]},{$pg[5]}
 			"; 
-			echo $q;
+			//echo $q;
 	
 	//verify all images have a paired meta field / create record otherwise
 	$imgs = $wpdb->get_results($q, ARRAY_A);
@@ -128,6 +128,18 @@ function imagemeta_plugin_options() {
 	addstyles();
 	
 	//build images table
+?>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" id="donate">
+Hello Friend.<br /><br />
+Donations are entirely optional.<br /> 
+If <b>ImageMeta</b> has made your life easier, and you wish to say thank you, a Secure PayPal link has been provided below.
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="JT8N86V6D2SG6">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+<?php 
+	
 	echo "<h1>Image Meta</h1><br />
 		  A very light-weight plugin, designed to make updating meta-values (title, caption, description and alternate text) more efficient, by providing one central table of imagery and a duplicate button to copy this information across fields. <b>Note: </b>Updates are performed immediately after defocusing a field.<br /><br />";
 	
@@ -420,6 +432,14 @@ function addstyles() {
         color: #6F6F6F;
         border: solid 2px #DFDFDF;
     }
+	#donate {
+		float:right;
+		width:180px;
+		height:170px;
+		border:1px solid #B74327;
+		margin:10px;
+		padding:20px 10px 10px 10px;
+	}
 STYLES;
 echo "
 	.sort_a {
