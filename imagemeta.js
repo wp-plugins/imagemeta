@@ -14,7 +14,8 @@
     jQuery('#imagemetas input[type="text"]').blur(function() {  
         jQuery(this).removeClass("focusField").addClass("idleField");
         var fd = jQuery(this);
-        if (jQuery.trim(fd.val()) == '' || fd.val() == unescape(this.defaultValue)){  
+        //if (jQuery.trim(fd.val()) == '' || fd.val() == unescape(this.defaultValue)){  
+        if (fd.val() == unescape(this.defaultValue)){  
             this.value = (this.defaultValue ? unescape(this.defaultValue) : '');  
             //alert("default value or blank");
         }
@@ -28,7 +29,7 @@
 });
 
 function updateField(fname,fval){
-    showLoading(fname[0]+":"+fname[1]);  	// shows updating gif
+    showLoading(fname[0]+":"+fname[1]);  		// shows updating gif
 	jQuery.post(ajax_object.ajaxurl, {
 		action: 'ajax_action',
 		fval: fval,
@@ -36,7 +37,7 @@ function updateField(fname,fval){
 	}, function(data) {
 		//alert(data); 							// changes default value
 		document.getElementById(fname[0]+":"+fname[1]).defaultValue = escape(fval);
-		hideLoading(fname[0]+":"+fname[1]);	// hides updating gif
+		hideLoading(fname[0]+":"+fname[1]);		// hides updating gif
 	});
 	return;
 }
@@ -69,4 +70,3 @@ function copyAcross(fID,mID){
 			  updateField(["meta_value",mID],fval); }
 	return;	
 }
-

@@ -45,6 +45,8 @@ Yes. We plan to add a feature to access posts (and post counts) where each image
 If you wish. Sure.
 
 == Changelog ==
+= 0.4.2 =
+* Per user request, ImageMeta now allows updating meta with a blank/empty value.
 
 = 0.4.1 =
 * Minor update to provide PayPal donate button for all the considerate (and handsome) individuals that wish to contribute to this and other fine plug-ins by the developer.

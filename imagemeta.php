@@ -3,7 +3,7 @@
 Plugin Name: ImageMeta
 Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
 Description: The fastest way to manage meta-data for your wordpress images.
-Version: 0.4.1
+Version: 0.4.2
 Author: era404 Creative Group, Inc.
 Author URI: http://www.era404.com
 License: GPLv2 or later.
@@ -209,8 +209,8 @@ If <b>ImageMeta</b> has made your life easier, and you wish to say thank you, a 
 	$EMB = $wpdb->get_results($qEMB, ARRAY_A); //myprint_r($EMB);
 	if(!empty($EMB)){
 		foreach($EMB as $v){
-			if(array_key_exists($v['post_parent'],$edits['e']) && $v['post_parent']>0)continue;
-			if(array_key_exists($v['ID'],$edits['e']) && $v['post_parent']<1)continue;
+			if(!empty($edits['e']) && array_key_exists($v['post_parent'],$edits['e']) && $v['post_parent']>0)continue;
+			if(!empty($edits['e']) && array_key_exists($v['ID'],$edits['e']) && $v['post_parent']<1)continue;
 			if($v['post_parent']<1) $v['post_parent'] = $v['ID'];
 			$edits['e'][$v['post_parent']] = "<option value='{$v['post_parent']}' >".substr($v['post_title'],0,30)."</option>";
 		}
