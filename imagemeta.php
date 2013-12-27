@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: ImageMeta
-Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
+Plugin URI: http://wordpress.org/plugins/imagemeta/
 Description: The fastest way to manage meta-data for your wordpress images.
-Version: 0.4.2
+Version: 0.4.3
 Author: era404 Creative Group, Inc.
 Author URI: http://www.era404.com
 License: GPLv2 or later.
@@ -17,10 +17,6 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 //globals
@@ -285,8 +281,10 @@ function ajax_updatedb() {
 	$wpdb->query($q);
 	die(); // stop executing script
 }
-function myprint_r($in) {
-	echo "<pre>"; print_r($in); echo "</pre>"; return;
+if(!function_exists("myprint_r")){
+	function myprint_r($in) {
+		echo "<pre>"; print_r($in); echo "</pre>"; return;
+	}
 }
 function addstyles() {
 	echo <<<STYLES
