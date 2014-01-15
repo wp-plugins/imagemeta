@@ -30,7 +30,7 @@ function imagemeta_admin_menu() {
 }
 
 // Setup plugin scripts and styles
-wp_enqueue_script( 'ajax-script', plugins_url('/imagemeta.js', __FILE__), array('jquery'), 1.0 ); // jQuery will be included automatically
+wp_enqueue_script( "imagemeta", plugin_dir_url( __FILE__ ) . 'imagemeta.js', array( 'jquery' ) );
 wp_localize_script( 'ajax-script', 'ajax_object', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) ); // setting ajaxurl
 add_action( 'wp_ajax_ajax_action', 'ajax_updatedb' ); 	//for updates
 
@@ -307,6 +307,8 @@ function addstyles() {
 		border-collapse: collapse;
 		border-spacing: 0;
 		width: 100%;
+		font-size: 12px;
+		line-height: 1.4em;
 	}
     #imagemetas tr.info td {
 		padding: 5px;
@@ -314,7 +316,7 @@ function addstyles() {
     }
 
 	tr:nth-child(2n+1){
-	  background-color: #f0f0f0;
+	  background-color: #FFF;
 	}
 
 	#imagemetahead tr, #imagemetahead tr th {

@@ -45,9 +45,6 @@ Yes. We plan to add a feature to access posts (and post counts) where each image
 If you wish. Sure.
 
 == Changelog ==
-= 0.4.3 =
-* Style changes and links updated.
-
 = 0.4.2 =
 * Per user request, ImageMeta now allows updating meta with a blank/empty value.
 
