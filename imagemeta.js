@@ -2,7 +2,7 @@
  * imagemeta handlers
 */
 
-	jQuery(document).ready(function() {
+	jQuery(document).ready(function() {		
     jQuery('#imagemetas input[type="text"]').addClass("idleField");  
     jQuery('#imagemetas input[type="text"]').focus(function() {  
         jQuery(this).removeClass("idleField").addClass("focusField");  

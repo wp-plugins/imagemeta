@@ -3,11 +3,11 @@
 Plugin Name: ImageMeta
 Plugin URI: http://wordpress.org/plugins/imagemeta/
 Description: The fastest way to manage meta-data for your wordpress images.
-Version: 0.4.3
+Version: 0.4.4
 Author: era404 Creative Group, Inc.
 Author URI: http://www.era404.com
 License: GPLv2 or later.
-Copyright 2012  era404 Creative Group, Inc.  (email : in4m@era404.com)
+Copyright 2014 era404 Creative Group, Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as 
@@ -20,7 +20,7 @@ GNU General Public License for more details.
 */
 
 //globals
-define('RECORDS_PER_PAGE', 50);
+define('IMAGEMETA_RECORDS_PER_PAGE', 50);
 define('IMAGEMETA_URL', admin_url() . 'options-general.php?page=imagemeta');
 
 // Setup plugin menus
@@ -29,10 +29,15 @@ function imagemeta_admin_menu() {
 	add_options_page( 'ImageMeta', 'ImageMeta', 'manage_options', 'imagemeta', 'imagemeta_plugin_options' );
 }
 
-// Setup plugin scripts and styles
-wp_enqueue_script( "imagemeta", plugin_dir_url( __FILE__ ) . 'imagemeta.js', array( 'jquery' ) );
-wp_localize_script( 'ajax-script', 'ajax_object', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) ); // setting ajaxurl
-add_action( 'wp_ajax_ajax_action', 'ajax_updatedb' ); 	//for updates
+/***********************************************************************************
+*     Add Required Scripts
+***********************************************************************************/
+add_action( 'admin_enqueue_scripts', 'imagemeta_admin_scripts' );
+function imagemeta_admin_scripts() {
+	wp_enqueue_script( 'ajax-script', plugins_url('/imagemeta.js', __FILE__), array('jquery'), 1.0 ); 	// jQuery will be included automatically
+	wp_localize_script( 'ajax-script', 'ajax_object', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) ); 	// setting ajaxurl
+}
+//add_action( 'wp_ajax_ajax_action', 'ajax_updatedb' ); 	//for updates
 
 
 // Build admin page
@@ -83,7 +88,7 @@ function imagemeta_plugin_options() {
 	*  5:record end
 	*/
 	
-	$pg = array($count,RECORDS_PER_PAGE,ceil($count/RECORDS_PER_PAGE));
+	$pg = array($count,IMAGEMETA_RECORDS_PER_PAGE,ceil($count/IMAGEMETA_RECORDS_PER_PAGE));
 	$p = $_GET['p'] = $pg[3] = (!isset($_GET['p']) || $_GET['p']<1 || $_GET['p']>$pg[2] ? 1 : $_GET['p']);
 	$pg[4] = ($pg[1]*$pg[3])-$pg[1]; 
 	$pg[5]=(($pg[4]+$pg[1])-1);
@@ -186,7 +191,7 @@ If <b>ImageMeta</b> has made your life easier, and you wish to say thank you, a 
 			$rmStyle = "orange"; $missing++;
 		}
 
-	$edits = array();
+	$edits = array("a"=>"","e"=>"");
 
 	$postid = $i['postid'];
 	//get all posts for which this image has been attached.
@@ -356,9 +361,6 @@ function addstyles() {
     	width:60px;
     	overflow:hidden;
     	margin-right:10px;
-    }
-    body {
-        padding: 10px;
     }
     #status {
         width:50%;
