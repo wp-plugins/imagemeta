@@ -45,6 +45,9 @@ Yes. We plan to add a feature to access posts (and post counts) where each image
 If you wish. Sure.
 
 == Changelog ==
+= 0.4.5 =
+* Moved ImageMeta to Tools Menu (where it belongs, and not in settings).
+
 = 0.4.4 =
 * Style changes to better match the WP3.8 interface.
 

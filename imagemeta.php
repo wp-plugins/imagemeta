@@ -3,7 +3,7 @@
 Plugin Name: ImageMeta
 Plugin URI: http://wordpress.org/plugins/imagemeta/
 Description: The fastest way to manage meta-data for your wordpress images.
-Version: 0.4.4
+Version: 0.4.5
 Author: era404 Creative Group, Inc.
 Author URI: http://www.era404.com
 License: GPLv2 or later.
@@ -23,22 +23,32 @@ GNU General Public License for more details.
 define('IMAGEMETA_RECORDS_PER_PAGE', 50);
 define('IMAGEMETA_URL', admin_url() . 'options-general.php?page=imagemeta');
 
+add_action( 'admin_init', 'imagemeta_admin_init' );
+function imagemeta_admin_init() {
+	wp_register_style( 'imagemeta_styles', plugins_url('imagemeta.css', __FILE__) );
+	wp_enqueue_script( 'ajax-script', plugins_url('/imagemeta.js', __FILE__), array('jquery'), 1.0 );
+	wp_localize_script( 'ajax-script', 'ajax_object', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) ); 	// setting ajaxurl
+	add_action( 'wp_ajax_ajax_action', 'ajax_updatedb' ); 	//for updates
+}
+
+
 // Setup plugin menus
 add_action( 'admin_menu', 'imagemeta_admin_menu' );
 function imagemeta_admin_menu() {
-	add_options_page( 'ImageMeta', 'ImageMeta', 'manage_options', 'imagemeta', 'imagemeta_plugin_options' );
+	$page = add_submenu_page( 'tools.php',
+			__( 'ImageMeta', 'imagemeta' ),
+			__( 'ImageMeta', 'imagemeta' ),
+			'administrator',
+			__FILE__,
+			'imagemeta_plugin_options' );
+	add_action( 'admin_print_styles-' . $page, 'imagemeta_admin_styles' );
 }
-
 /***********************************************************************************
-*     Add Required Scripts
+ *     Add Required Styles
 ***********************************************************************************/
-add_action( 'admin_enqueue_scripts', 'imagemeta_admin_scripts' );
-function imagemeta_admin_scripts() {
-	wp_enqueue_script( 'ajax-script', plugins_url('/imagemeta.js', __FILE__), array('jquery'), 1.0 ); 	// jQuery will be included automatically
-	wp_localize_script( 'ajax-script', 'ajax_object', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) ); 	// setting ajaxurl
+function imagemeta_admin_styles() {
+	wp_enqueue_style( 'imagemeta_styles' );
 }
-//add_action( 'wp_ajax_ajax_action', 'ajax_updatedb' ); 	//for updates
-
 
 // Build admin page
 function imagemeta_plugin_options() {
@@ -292,171 +302,14 @@ if(!function_exists("myprint_r")){
 	}
 }
 function addstyles() {
-	echo <<<STYLES
-	<style type="text/css">
-    *{
-        margin:0;
-        padding:0;
-        font-family: "Lucida Grande", Arial, sans-serif;
-    }
-    #imagemetas p {
-    	width:60px;
-    	overflow:hidden;
-    	margin: 5px 0;
-    	float:left;
-    	font-weight:bold;
-		clear: left;
-		height
-    }
-	#imagemetas {
-		border-collapse: collapse;
-		border-spacing: 0;
-		width: 100%;
-		font-size: 12px;
-		line-height: 1.4em;
-	}
-    #imagemetas tr.info td {
-		padding: 5px;
-		font-size: 11px;
-    }
-
-	tr:nth-child(2n+1){
-	  background-color: #FFF;
-	}
-
-	#imagemetahead tr, #imagemetahead tr th {
-		height: 20px;
-		background-color: #cfcfcf;
-		font-weight: bold;
-	}
-	.sort_a, .sort_d {
-		width: 9px;
-		height: 9px;
-		display: inline-block;
-		margin: 0 2px;
-	}
-	.sort_a span, .sort_d span {
-		display: none;
-	}
-	.sort_a {
-		background-position: 9px 0;
-	}
-	.sort_d {
-		background-position: 9px 9px;
-	}
-	.sort_a.selected {
-		background-position: 0 0;
-	}
-	.sort_d.selected {
-		background-position: 0 9px;
-	}
-		.sort_a:hover {
-		background-position: 18px 0;
-	}
-	.sort_d:hover {
-		background-position: 18px 9px;
-	}
-    .thumb {
-    	height:45px;
-    	width:60px;
-    	overflow:hidden;
-    	margin-right:10px;
-    }
-    #status {
-        width:50%;
-        padding:10px;
-        outline:none;
-        height:36px;
-    }
-    .pager {
-    	width:18px;
-    	height:14px;
-    	background-color:#DDD;
-    	border:1px solid #AAA;
-    	display:block;
-    	text-decoration: none;
-    	text-align:center;
-    	float:left;
-		margin: 0 3px;
-    }
-	.pager a {
-		text-decoration:none;
-	}
-	.pager a:hover {
-		font-weight:bold;
-	}
-	.editbutton {
-		width: auto !important;
-		margin: 0 4px !important;
-		float:right !important;
-		padding: 0 4px;
-		clear: none;
-    	height:14px;
-    	background-color:#DDD;
-    	border:1px solid #AAA;
-    	display:block;
-    	text-decoration: none;
-		margin: 0 3px;
-    }
-	.editbutton a {
-		text-decoration:none;
-	}
-	.editbutton a:hover {
-		font-weight:bold;
-	}
-	.editmaster {
-		border:1px solid black;
-	}
-    .copyAcross {
-    	margin-top:10px;
-    }
-	tr.row {
-		height: 70px;
-	}
-	tr.orange, #warning.orange {
-		background: #ffe4db;
-	}
-	#warning {
-		padding: 10px;
-		margin-bottom: 10px;
-	}
-	.focusField {
-		padding-left: 20px;
-		width: 300px;
-        border:solid 2px #73A6FF;
-        background:#EFF5FF;
-        color:#000;
-    }
-    .idleField {
-		padding-left: 20px;
-        width: 300px;
-		background:#EEE;
-        color: #6F6F6F;
-        border: solid 2px #DFDFDF;
-    }
-	#donate {
-		float:right;
-		width:180px;
-		height:170px;
-		border:1px solid #B74327;
-		margin:10px;
-		padding:20px 10px 10px 10px;
-	}
-STYLES;
 echo "
+<style type='text/css'>
 	.sort_a {
 		background-image: url(".plugins_url('/sort.gif', __FILE__).");
 	}
 	.sort_d {
 		background-image: url(".plugins_url('/sort.gif', __FILE__).");
 	}
-    .upd {
-    	margin:0;
-    	padding:0;
-    	float:left;
-    	width:16px;
-    	height:16px;
-    }
     .updA {
     	background-image: url(".plugins_url('/updating.gif', __FILE__).");
     	margin:0;
