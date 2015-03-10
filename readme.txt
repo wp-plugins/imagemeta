@@ -45,6 +45,9 @@ Yes. We plan to add a feature to access posts (and post counts) where each image
 If you wish. Sure.
 
 == Changelog ==
+= 0.4.6 =
+* Added new plugin icons.
+
 = 0.4.5 =
 * Moved ImageMeta to Tools Menu (where it belongs, and not in settings).
 
