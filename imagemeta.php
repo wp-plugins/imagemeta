@@ -3,11 +3,11 @@
 Plugin Name: ImageMeta
 Plugin URI: http://wordpress.org/plugins/imagemeta/
 Description: The fastest way to manage meta-data for your wordpress images.
-Version: 0.4.6
-Author: era404 Creative Group, Inc.
+Version: 0.4.5
+Author: ERA404
 Author URI: http://www.era404.com
 License: GPLv2 or later.
-Copyright 2014 era404 Creative Group, Inc.
+Copyright 2014 ERA404 Creative Group, Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as 
