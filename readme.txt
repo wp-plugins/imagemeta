@@ -1,7 +1,7 @@
 === ImageMeta ===
-Contributors: era404
+Contributors: ERA404
 Requires at least: 3.2.1
-Tested up to: 3.4
+Tested up to: 4.1.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -45,9 +45,6 @@ Yes. We plan to add a feature to access posts (and post counts) where each image
 If you wish. Sure.
 
 == Changelog ==
-= 0.4.6 =
-* Added new plugin icons.
-
 = 0.4.5 =
 * Moved ImageMeta to Tools Menu (where it belongs, and not in settings).
 
