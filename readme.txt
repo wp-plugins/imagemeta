@@ -1,5 +1,6 @@
 === ImageMeta ===
 Contributors: ERA404
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JT8N86V6D2SG6
 Requires at least: 3.2.1
 Tested up to: 4.1.1
 Stable tag: trunk
@@ -45,6 +46,9 @@ Yes. We plan to add a feature to access posts (and post counts) where each image
 If you wish. Sure.
 
 == Changelog ==
+= 0.4.6
+* Added donate link ;)
+
 = 0.4.5 =
 * Moved ImageMeta to Tools Menu (where it belongs, and not in settings).
 
