@@ -1,7 +1,6 @@
 /*
  * imagemeta handlers
 */
-
 	jQuery(document).ready(function() {		
     jQuery('#imagemetas input[type="text"]').addClass("idleField");  
     jQuery('#imagemetas input[type="text"]').focus(function() {  
@@ -9,7 +8,6 @@
         if (this.value == this.defaultValue){  
             this.select(); 
         }  
-
     });  
     jQuery('#imagemetas input[type="text"]').blur(function() {  
         jQuery(this).removeClass("focusField").addClass("idleField");
@@ -27,7 +25,6 @@
         }
     });  
 });
-
 function updateField(fname,fval){
     showLoading(fname[0]+":"+fname[1]);  		// shows updating gif
 	jQuery.post(ajax_object.ajaxurl, {
@@ -41,7 +38,6 @@ function updateField(fname,fval){
 	});
 	return;
 }
-
 // update indicators
 function showLoading(div){
 	if(document.getElementById(div)) {
@@ -56,7 +52,6 @@ function hideLoading(div){
 // copy titles across fields
 function copyAcross(fID,mID){
 	fval = document.getElementById("post_title:"+fID).value;
-
 	var caption = document.getElementById('post_excerpt:'+fID);
 	if(caption) { caption.value = unescape(fval);
 				  updateField(["post_excerpt",fID],fval); }

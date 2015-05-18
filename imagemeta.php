@@ -3,26 +3,22 @@
 Plugin Name: ImageMeta
 Plugin URI: http://wordpress.org/plugins/imagemeta/
 Description: The fastest way to manage meta-data for your wordpress images.
-Version: 0.4.6
-Author: ERA404
+Version: 0.4.7
+Author: era404
 Author URI: http://www.era404.com
 License: GPLv2 or later.
 Copyright 2014 ERA404 Creative Group, Inc.
-
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as 
 published by the Free Software Foundation.
-
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
-
 //globals
 define('IMAGEMETA_RECORDS_PER_PAGE', 50);
-define('IMAGEMETA_URL', admin_url() . 'options-general.php?page=imagemeta');
-
+define('IMAGEMETA_URL', admin_url() . 'tools.php?page=' . urlencode(plugin_basename(__FILE__)) );
 add_action( 'admin_init', 'imagemeta_admin_init' );
 function imagemeta_admin_init() {
 	wp_register_style( 'imagemeta_styles', plugins_url('imagemeta.css', __FILE__) );
@@ -30,8 +26,6 @@ function imagemeta_admin_init() {
 	wp_localize_script( 'ajax-script', 'ajax_object', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) ); 	// setting ajaxurl
 	add_action( 'wp_ajax_ajax_action', 'ajax_updatedb' ); 	//for updates
 }
-
-
 // Setup plugin menus
 add_action( 'admin_menu', 'imagemeta_admin_menu' );
 function imagemeta_admin_menu() {
@@ -49,7 +43,6 @@ function imagemeta_admin_menu() {
 function imagemeta_admin_styles() {
 	wp_enqueue_style( 'imagemeta_styles' );
 }
-
 // Build admin page
 function imagemeta_plugin_options() {
 	if ( !current_user_can( 'manage_options' ) )  {
@@ -68,17 +61,14 @@ function imagemeta_plugin_options() {
 		$rwppm = "DELETE FROM {$wpdb->prefix}postmeta WHERE post_id={$_GET['remove']}"; $wpdb->query($rwppm);
 	}
 	
-
 	//handle sorting
 	$sorting = array("d"=>"post_date ASC",
 					 "d-"=>"post_date DESC",
 					 "t"=>"post_title ASC",
 					 "t-"=>"post_title DESC");
-
 	$s = $_GET['s'] = (@!isset($_GET['s']) || !array_key_exists($_GET['s'],$sorting) ? "d" : $_GET['s']);
 	$sort = $sorting[$_GET['s']];
 		
-
 	
 	//get count, first
 	$cq =  "SELECT ID from {$wpdb->prefix}posts, {$wpdb->prefix}postmeta
@@ -131,13 +121,8 @@ function imagemeta_plugin_options() {
 			$wpdb->query("INSERT INTO {$wpdb->prefix}postmeta (meta_id,post_id,meta_key,meta_value) VALUES (NULL,{$i['postid']},'_wp_attachment_image_alt','')");
 			}
 	}
-
 	//pull 30 rows of images
 	$imgs = $wpdb->get_results($q, ARRAY_A);
-
-	//myprint_r($imgs);
-	addstyles();
-	
 	//build images table
 ?>
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" id="donate">
@@ -155,9 +140,12 @@ If <b>ImageMeta</b> has made your life easier, and you wish to say thank you, a 
 		  A very light-weight plugin, designed to make updating meta-values (title, caption, description and alternate text) more efficient, by providing one central table of imagery and a duplicate button to copy this information across fields. <b>Note: </b>Updates are performed immediately after defocusing a field.<br /><br />";
 	
 	// handle pager
-	echo "<div style='clear:both;'>&nbsp; Page: $p (".($pg[4]+1)." - ".($pg[5]+1)." of {$pg[0]}) ";
-	for($page=1;$page<=$pg[2];$page++){ echo "<p class='pager'><a href='".IMAGEMETA_URL."&p={$page}&s={$s}'>{$page}</a></p>"; }
-	echo "</div>
+	echo "<div class='pager'><span>Page $p <em>(".($pg[4]+1)." - ".($pg[5]+1)." of {$pg[0]})</em></span><ul>";
+	for($page=1;$page<=$pg[2];$page++){ 
+		echo "<li".($p == $page ? " class='current'>" : "><a href='".IMAGEMETA_URL."&p={$page}&s={$s}'>") . "{$page}";
+		echo ($p==$page ? "" : "</a>") . "</li>"; 
+	}
+	echo "</ul></div>
 	<br /><br />";
 	
 	echo "<div id='warning' class='orange'>".(($cwpp>1||$cwppm>1)?"NOTE:</strong><br />($cwpp) post records removed.<br />($cwppm) postmeta records removed.<br /><br />":"")."</div>";
@@ -189,7 +177,6 @@ If <b>ImageMeta</b> has made your life easier, and you wish to say thank you, a 
 		
 		$contentdir = explode("/", WP_CONTENT_DIR);						  //get content folder name
 		$filesplit = explode($contentdir[(count($contentdir)-1)],$sm[0]); //get image file path
-
 		if(file_exists(WP_CONTENT_DIR . $filesplit[1])) {
 			$link = "<a href='{$lg[0]}' target='_blank'><img src='{$sm[0]}' width='60'></a>";
 			$rmStyle = "";
@@ -200,9 +187,7 @@ If <b>ImageMeta</b> has made your life easier, and you wish to say thank you, a 
 			//echo WP_CONTENT_DIR . $filesplit[1] . " could not be found.<br />";
 			$rmStyle = "orange"; $missing++;
 		}
-
 	$edits = array("a"=>"","e"=>"");
-
 	$postid = $i['postid'];
 	//get all posts for which this image has been attached.
 	$qATT = "SELECT p.post_title,pm.post_id as edit 
@@ -227,7 +212,7 @@ If <b>ImageMeta</b> has made your life easier, and you wish to say thank you, a 
 		}
 		$edits['e'] = "Embedded (".count($edits['e']).") <select onChange='javascript:edit(this.options[this.selectedIndex].value);'><option value='-1'>Edit One</option>".implode("",$edits['e'])."</select>";
 	}
-
+	foreach($i as $k=>$v){ $i[$k] = esc_attr($v); } //escape
 echo <<<EOHTML
 	<tr class='info $rmStyle'>
 		<td colspan='4'>
@@ -254,15 +239,21 @@ echo <<<EOHTML
 	</tr>
 EOHTML;
 	}
-	echo "</table>
-	<script type='text/javascript'>
+	echo "</table>";
+	// handle pager
+	echo "<div class='pager'><span>Page $p <em>(".($pg[4]+1)." - ".($pg[5]+1)." of {$pg[0]})</em></span><ul>";
+	for($page=1;$page<=$pg[2];$page++){ 
+		echo "<li".($p == $page ? " class='current'>" : "><a href='".IMAGEMETA_URL."&p={$page}&s={$s}'>") . "{$page}";
+		echo ($p==$page ? "" : "</a>") . "</li>"; 
+	}
+	echo "</ul></div>";
+	echo "<script type='text/javascript'>
 		function edit(postid){
 		if(postid<1) return;
 		window.open('{$admin}post.php?post='+postid+'&action=edit');
 		return;
 	}
 	</script>";
-
 	if($missing>0) { echo <<<EOWARNING
 <script type='text/javascript'>
 	var warning = document.getElementById('warning');
@@ -272,15 +263,10 @@ EOWARNING;
 	}
 	else { echo "<script type='text/javascript'>document.getElementById('warning').style.display = 'none';</script>";
 	}
-
 }
-
-
 /**************************************************************************************************
 *	Some useful functions
 **************************************************************************************************/
-
-
 function ajax_updatedb() {
 	global $wpdb;
 	
@@ -300,37 +286,5 @@ if(!function_exists("myprint_r")){
 	function myprint_r($in) {
 		echo "<pre>"; print_r($in); echo "</pre>"; return;
 	}
-}
-function addstyles() {
-echo "
-<style type='text/css'>
-	.sort_a {
-		background-image: url(".plugins_url('/sort.gif', __FILE__).");
-	}
-	.sort_d {
-		background-image: url(".plugins_url('/sort.gif', __FILE__).");
-	}
-    .updA {
-    	background-image: url(".plugins_url('/updating.gif', __FILE__).");
-    	margin:0;
-    	padding:0;
-    	float:left;
-    	width:16px;
-    	height:16px;
-    }
-	.focusField {
-		background: url(".plugins_url('/edit.png', __FILE__).") no-repeat 2px 2px;
-	}
-	.idleField {
-		background: url(".plugins_url('/okay.png', __FILE__).") no-repeat 2px 2px;
-	}
-	.updateField {
-		padding-left: 20px;
-		 width: 300px;
-		background: url(".plugins_url('/updating.gif', __FILE__).") no-repeat 2px 2px;
-	}
-</style>
-";
-return;
 }
 ?>
